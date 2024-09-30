@@ -47,6 +47,9 @@ public class BalanceDataGenerator {
                 random.nextBoolean()  // Boolean for support needed
             );
 
+            // Print the generated values
+            System.out.println("Generated Data: " + jsonData);
+
             try {
                 // Send POST request to the database
                 URL url = new URL(System.getenv("DB_URL") + "/balancedata");
