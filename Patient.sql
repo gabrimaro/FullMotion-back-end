@@ -5,9 +5,7 @@ CREATE TABLE personal_info
   id INT PRIMARY KEY,
   name VARCHAR(225),
   address VARCHAR(225),
-  gender ENUM('M', 'F'),
-  job VARCHAR(100),
-  notes TEXT
+  active_status BOOLEAN
 );
 
 CREATE TABLE thresholds 
