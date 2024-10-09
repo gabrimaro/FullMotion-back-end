@@ -12,7 +12,11 @@ public class MotionDataGenerator {
 
     public static void main(String[] args) {
         int num = 10;  // Specify the number of records to generate
-        generateMotionData(num);
+        int successfulRequests = generateMotionData(num);
+        System.out.println("Report: ");
+        System.out.println("Total records generated: " + num);
+        System.out.println("Successfully sent records: " + successfulRequests);
+        System.out.println("Failed records: " + (num - successfulRequests));
     }
 
     public static int generateMotionData(int num) {
@@ -35,6 +39,8 @@ public class MotionDataGenerator {
                 LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME)  // Current timestamp
             );
 
+            System.out.println("Generated Record: " + jsonData);  // Print each generated record
+
             try {
                 // Send POST request to the database
                 URL url = new URL(System.getenv("DB_URL") + "/motiondata");
@@ -51,9 +57,13 @@ public class MotionDataGenerator {
                 int responseCode = conn.getResponseCode();
                 if (responseCode == HttpURLConnection.HTTP_CREATED) {
                     count++;
+                    System.out.println("Successfully sent record " + (x + 1));
+                } else {
+                    System.out.println("Failed to send record " + (x + 1) + ". Response code: " + responseCode);
                 }
 
             } catch (Exception e) {
+                System.out.println("Error sending record " + (x + 1));
                 e.printStackTrace();
             }
         }
