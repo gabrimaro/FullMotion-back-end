@@ -25,7 +25,11 @@ public class BalanceDataGenerator {
 
     public static void main(String[] args) {
         int num = 10;  // Specify the number of records to generate
-        generateBalanceData(num);
+        int successfulRequests = generateBalanceData(num);
+        System.out.println("Report: ");
+        System.out.println("Total records generated: " + num);
+        System.out.println("Successfully sent records: " + successfulRequests);
+        System.out.println("Failed records: " + (num - successfulRequests));
     }
 
     public static int generateBalanceData(int num) {
@@ -47,6 +51,8 @@ public class BalanceDataGenerator {
                 random.nextBoolean()  // Boolean for support needed
             );
 
+            System.out.println("Generated Record: " + jsonData);  // Print each generated record
+
             try {
                 // Send POST request to the database
                 URL url = new URL(System.getenv("DB_URL") + "/balancedata");
@@ -63,9 +69,13 @@ public class BalanceDataGenerator {
                 int responseCode = conn.getResponseCode();
                 if (responseCode == HttpURLConnection.HTTP_CREATED) {
                     count++;
+                    System.out.println("Successfully sent record " + (x + 1));
+                } else {
+                    System.out.println("Failed to send record " + (x + 1) + ". Response code: " + responseCode);
                 }
 
             } catch (Exception e) {
+                System.out.println("Error sending record " + (x + 1));
                 e.printStackTrace();
             }
         }
