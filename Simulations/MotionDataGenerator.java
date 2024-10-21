@@ -22,21 +22,32 @@ public class MotionDataGenerator {
     public static int generateMotionData(int num) {
         if (num < 1) num = 1;
         if (num > 146) num = 146;  // Limiting the number of records for simplicity
-        
+
         int count = 0;
         Random random = new Random();
 
+        // Define thresholds for alerts
+        double jointAngleThreshold = 150.0;  // Example threshold for joint angle
+        double movementSpeedThreshold = 2.0;  // Example threshold for movement speed
+
         for (int x = 0; x < num; x++) {
+            double exerciseID = 1 + (9 * random.nextDouble());
+            double jointAngle = 180 * random.nextDouble();
+            double rangeOfMotion = 10 + (170 * random.nextDouble());
+            double movementSpeed = 0.1 + (2.4 * random.nextDouble());
+            double stepLength = 0.3 + (1.2 * random.nextDouble());
+            double cadence = 60 + (90 * random.nextDouble());
+
             String jsonData = String.format(
                 "{ \"trackingID\": %d, \"exerciseID\": %s, \"jointAngle\": %s, \"rangeOfMotion\": %s, \"movementSpeed\": %s, \"stepLength\": %s, \"cadence\": %s, \"timestamp\": \"%s\" }",
                 x + 1, 
-                df.format(1 + (9 * random.nextDouble())),  // Random exercise ID as float
-                df.format(180 * random.nextDouble()),  // Joint angle in degrees
-                df.format(10 + (170 * random.nextDouble())),  // Range of motion in degrees
-                df.format(0.1 + (2.4 * random.nextDouble())),  // Speed in meters per second
-                df.format(0.3 + (1.2 * random.nextDouble())),  // Step length in meters
-                df.format(60 + (90 * random.nextDouble())),  // Cadence (steps per minute)
-                LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME)  // Current timestamp
+                df.format(exerciseID), 
+                df.format(jointAngle),  
+                df.format(rangeOfMotion), 
+                df.format(movementSpeed),  
+                df.format(stepLength),  
+                df.format(cadence),  
+                LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME)  
             );
 
             System.out.println("Generated Record: " + jsonData);  // Print each generated record
@@ -57,9 +68,20 @@ public class MotionDataGenerator {
                 int responseCode = conn.getResponseCode();
                 if (responseCode == HttpURLConnection.HTTP_CREATED) {
                     count++;
+<<<<<<< HEAD
                     System.out.println("Successfully sent record " + (x + 1));
                 } else {
                     System.out.println("Failed to send record " + (x + 1) + ". Response code: " + responseCode);
+=======
+
+                    // Check for alerts
+                    if (jointAngle > jointAngleThreshold) {
+                        sendAlert("Joint angle exceeded threshold: " + jointAngle);
+                    }
+                    if (movementSpeed > movementSpeedThreshold) {
+                        sendAlert("Movement speed exceeded threshold: " + movementSpeed);
+                    }
+>>>>>>> hhind002
                 }
 
             } catch (Exception e) {
@@ -69,5 +91,32 @@ public class MotionDataGenerator {
         }
 
         return count;
+    }
+
+    // Method to send alerts (example implementation)
+    private static void sendAlert(String message) {
+        try {
+            URL alertUrl = new URL(System.getenv("ALERT_URL")); // Ensure ALERT_URL is set in your environment
+            HttpURLConnection alertConn = (HttpURLConnection) alertUrl.openConnection();
+            alertConn.setRequestMethod("POST");
+            alertConn.setRequestProperty("Content-Type", "application/json; utf-8");
+            alertConn.setDoOutput(true);
+
+            String alertData = String.format("{\"alert\": \"%s\"}", message);
+            try (OutputStream os = alertConn.getOutputStream()) {
+                byte[] input = alertData.getBytes("utf-8");
+                os.write(input, 0, input.length);
+            }
+
+            int alertResponseCode = alertConn.getResponseCode();
+            if (alertResponseCode == HttpURLConnection.HTTP_OK) {
+                System.out.println("Alert sent: " + message);
+            } else {
+                System.out.println("Failed to send alert: " + message);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
