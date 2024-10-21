@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Random;
 
-public class TempAndSweatDataGenerator {
+public class tempAndSweat {
     public static void main(String[] args) {
         int num = 10;  // Specify the number of records to generate
         generateTempSweatData(num);
