@@ -1,4 +1,4 @@
-package com.example.healthapp.model;
+package com.Backend.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
