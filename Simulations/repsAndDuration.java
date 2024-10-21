@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Random;
 
-public class RepsAndDurationDataGenerator {
+public class repsAndDuration {
     public static void main(String[] args) {
         int num = 10;  // Specify the number of records to generate
         generateRepsAndDurationData(num);
