@@ -39,7 +39,7 @@ public class repsAndDuration {
 
                 try {
                     // Send POST request to the database
-                    URL url = new URL(System.getenv("DB_URL") + "/repsdurationdata");
+                    URL url = new URL(System.getenv("DB_URL") + "/repsdurationdata"); // Db URL has a place holder in it as of right now
                     HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                     conn.setRequestMethod("POST");
                     conn.setRequestProperty("Content-Type", "application/json; utf-8");

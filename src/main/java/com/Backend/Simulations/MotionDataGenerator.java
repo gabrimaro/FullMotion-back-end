@@ -54,7 +54,7 @@ public class MotionDataGenerator {
 
             try {
                 // Send POST request to the database
-                URL url = new URL(System.getenv("DB_URL") + "/motiondata");
+                URL url = new URL(System.getenv("DB_URL") + "/motiondata"); // Db URL has a place holder in it as of right now
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("POST");
                 conn.setRequestProperty("Content-Type", "application/json; utf-8");
