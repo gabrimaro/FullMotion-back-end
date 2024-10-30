@@ -1,20 +1,20 @@
 package com.Backend.Model;
+
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "users")
+@Table(name = "Repititions")
 @Getter
 @Setter
-public class User {
+public class RepsDuration {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; // User ID number
+    private Long repsDurationID;
 
-    private String username;
-    private String password;
+    private int reps;
+    private double duration;
+    private String timestamp;
 }
-
-
-
