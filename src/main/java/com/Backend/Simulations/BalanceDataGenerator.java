@@ -2,82 +2,97 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.io.OutputStream;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
 public class BalanceDataGenerator {
 
     private static final DecimalFormat df = new DecimalFormat("#.##");
+    private static final SimpleDateFormat timestampFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-    // Example set of possible values for body alignment, center of mass, and sway patterns
     private static final List<String> bodyAlignmentOptions = Arrays.asList(
         "Neutral", "Forward", "Backward", "Left Tilt", "Right Tilt"
     );
-    
     private static final List<String> centerOfMassOptions = Arrays.asList(
         "Center", "Forward Shift", "Backward Shift", "Left Shift", "Right Shift"
     );
-    
     private static final List<String> swayPatternOptions = Arrays.asList(
         "Stable", "Mild Sway", "Moderate Sway", "Significant Sway"
     );
 
-    public static void print(String[] args) {
-        int num = 10;  // Specify the number of records to generate
-        int successfulRequests = generateBalanceData(num);
-        System.out.println("Report: ");
-        System.out.println("Total records generated: " + num);
-        System.out.println("Successfully sent records: " + successfulRequests);
-        System.out.println("Failed records: " + (num - successfulRequests));
+    public static void main(String[] args) {
+        int intervalMillis = 1000;  // Set interval to 1 second
+        int durationSeconds = 60;   // Run for 60 seconds
+
+        int successfulRequests = startContinuousDataStream(intervalMillis, durationSeconds);
+        System.out.println("Streaming Complete: ");
+        System.out.println("Total records sent: " + successfulRequests);
     }
 
-    public static int generateBalanceData(int num) {
-        if (num < 1) num = 1;
-        if (num > 146) num = 146;  // Limiting the number of records for simplicity
-        
-        int count = 0;
+    public static int startContinuousDataStream(int intervalMillis, int durationSeconds) {
         Random random = new Random();
+        int count = 0;
+        long endTime = System.currentTimeMillis() + durationSeconds * 1000;
 
-        for (int x = 0; x < num; x++) {
+        while (System.currentTimeMillis() < endTime) {
+            String timestamp = timestampFormat.format(new Date());
             String jsonData = String.format(
-                "{ \"balanceID\": %d, \"sessionID\": %d, \"bodyAlignment\": \"%s\", \"centerOfMass\": \"%s\", \"swayPattern\": \"%s\", \"balanceTime\": %s, \"supportNeeded\": %b }",
-                x + 1, 
-                random.nextInt(100) + 1,  // Random session ID as an integer
-                bodyAlignmentOptions.get(random.nextInt(bodyAlignmentOptions.size())),  // Random body alignment
-                centerOfMassOptions.get(random.nextInt(centerOfMassOptions.size())),  // Random center of mass
-                swayPatternOptions.get(random.nextInt(swayPatternOptions.size())),  // Random sway pattern
-                df.format(5 + (55 * random.nextDouble())),  // Balance time in seconds
-                random.nextBoolean()  // Boolean for support needed
+                "{ \"timestamp\": \"%s\", \"balanceID\": %d, \"sessionID\": %d, \"bodyAlignment\": \"%s\", \"centerOfMass\": \"%s\", \"swayPattern\": \"%s\", \"balanceTime\": %s, \"supportNeeded\": %b }",
+                timestamp,
+                count + 1,
+                random.nextInt(100) + 1,
+                bodyAlignmentOptions.get(random.nextInt(bodyAlignmentOptions.size())),
+                centerOfMassOptions.get(random.nextInt(centerOfMassOptions.size())),
+                swayPatternOptions.get(random.nextInt(swayPatternOptions.size())),
+                df.format(5 + (55 * random.nextDouble())),
+                random.nextBoolean()
             );
 
+            if (sendData(jsonData)) {
+                count++;
+            }
+
             try {
-                // Send POST request to the database
-                URL url = new URL(System.getenv("DB_URL") + "/balancedata"); // Db URL has a place holder in it as of right now
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setRequestMethod("POST");
-                conn.setRequestProperty("Content-Type", "application/json; utf-8");
-                conn.setDoOutput(true);
-
-                try (OutputStream os = conn.getOutputStream()) {
-                    byte[] input = jsonData.getBytes("utf-8");
-                    os.write(input, 0, input.length);
-                }
-
-                int responseCode = conn.getResponseCode();
-                if (responseCode == HttpURLConnection.HTTP_CREATED) {
-                    count++;
-                    System.out.println("Successfully sent record " + (x + 1));
-                } else {
-                    System.out.println("Failed to send record " + (x + 1) + ". Response code: " + responseCode);
-                }
-
-            } catch (Exception e) {
-                System.out.println("Error sending record " + (x + 1));
-                e.printStackTrace();
+                Thread.sleep(intervalMillis);  // Wait for the specified interval before sending the next record
+            } catch (InterruptedException e) {
+                System.out.println("Streaming interrupted.");
+                Thread.currentThread().interrupt();
+                break;
             }
         }
 
         return count;
+    }
+
+    private static boolean sendData(String jsonData) {
+        try {
+            URL url = new URL(System.getenv("DB_URL") + "/balancedata");
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Content-Type", "application/json; utf-8");
+            conn.setDoOutput(true);
+
+            try (OutputStream os = conn.getOutputStream()) {
+                byte[] input = jsonData.getBytes("utf-8");
+                os.write(input, 0, input.length);
+            }
+
+            int responseCode = conn.getResponseCode();
+            if (responseCode == HttpURLConnection.HTTP_CREATED) {
+                System.out.println("Successfully sent record at " + jsonData);
+                return true;
+            } else {
+                System.out.println("Failed to send record. Response code: " + responseCode);
+                return false;
+            }
+
+        } catch (Exception e) {
+            System.out.println("Error sending record.");
+            e.printStackTrace();
+            return false;
+        }
     }
 }
