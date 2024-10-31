@@ -5,66 +5,87 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Random;
 
-public class forceAndPressure {
-    public static void print(String[] args) {
-        int num = 10;  // Specify the number of records to generate
-        generateForcePressureData(num);
+public class ForceAndPressure {
+
+    public static void main(String[] args) {
+        int intervalMillis = 1000;  // Set interval to 1 second
+        int durationSeconds = 60;   // Run for 60 seconds
+
+        int successfulRequests = startContinuousForcePressureStream(intervalMillis, durationSeconds);
+        System.out.println("Streaming Complete: ");
+        System.out.println("Total records sent: " + successfulRequests);
     }
 
-    public static int generateForcePressureData(int num) {
-        if (num < 1) num = 1;
-        if (num > 146) num = 146;  // Limiting the number of records for simplicity
-
-        int count = 0;
+    public static int startContinuousForcePressureStream(int intervalMillis, int durationSeconds) {
         Random random = new Random();
+        int count = 0;
+        long endTime = System.currentTimeMillis() + durationSeconds * 1000;
 
-        for (int i = 0; i < num; i++) {
-            double pressureDistribution = 1 + (random.nextDouble() * 9.0);  // Pressure distribution in range [1, 10]
-            double positionTime = 0.5 + (random.nextDouble() * 9.5);  // Position time in range [0.5, 10]
-            boolean muscleActivation = random.nextBoolean();  // Random boolean for muscle activation
+        while (System.currentTimeMillis() < endTime) {
+            double pressureDistribution = 1 + (random.nextDouble() * 9.0);  // Range [1, 10]
+            double positionTime = 0.5 + (random.nextDouble() * 9.5);  // Range [0.5, 10]
+            boolean muscleActivation = random.nextBoolean();
+            String timestamp = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
 
-            // Check if the data exceeds a certain threshold and alert the patient
+            // Alert if values exceed thresholds
             if (pressureDistribution > 8 || positionTime > 10) {
                 alertPatient(pressureDistribution, positionTime);
             }
 
-            // Apply thresholds for testing
-            if (pressureDistribution >= 1 && pressureDistribution <= 8 && positionTime >= 1 && positionTime <= 10) {
-                String jsonData = String.format(
-                    "{ \"forcePressureID\": %d, \"exerciseID\": %d, \"muscleActivation\": %b, \"pressureDistribution\": %.2f, \"positionTime\": %.2f, \"timestamp\": \"%s\" }",
-                    i + 1,
-                    random.nextInt(10) + 1,  // Random exercise ID as integer
-                    muscleActivation,
-                    pressureDistribution,
-                    positionTime,
-                    LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME)  // Current timestamp
-                );
+            // Create JSON data
+            String jsonData = String.format(
+                "{ \"forcePressureID\": %d, \"exerciseID\": %d, \"muscleActivation\": %b, \"pressureDistribution\": %.2f, \"positionTime\": %.2f, \"timestamp\": \"%s\" }",
+                count + 1,
+                random.nextInt(10) + 1,
+                muscleActivation,
+                pressureDistribution,
+                positionTime,
+                timestamp
+            );
 
-                try {
-                    // Send POST request to the database
-                    URL url = new URL(System.getenv("DB_URL") + "/forcepressuredata"); // Db URL has a place holder in it as of right now
-                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                    conn.setRequestMethod("POST");
-                    conn.setRequestProperty("Content-Type", "application/json; utf-8");
-                    conn.setDoOutput(true);
+            if (sendData(jsonData)) {
+                count++;
+            }
 
-                    try (OutputStream os = conn.getOutputStream()) {
-                        byte[] input = jsonData.getBytes("utf-8");
-                        os.write(input, 0, input.length);
-                    }
-
-                    int responseCode = conn.getResponseCode();
-                    if (responseCode == HttpURLConnection.HTTP_CREATED) {
-                        count++;
-                    }
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+            try {
+                Thread.sleep(intervalMillis);  // Wait for the specified interval
+            } catch (InterruptedException e) {
+                System.out.println("Streaming interrupted.");
+                Thread.currentThread().interrupt();
+                break;
             }
         }
 
         return count;
+    }
+
+    private static boolean sendData(String jsonData) {
+        try {
+            URL url = new URL(System.getenv("DB_URL") + "/forcepressuredata");
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Content-Type", "application/json; utf-8");
+            conn.setDoOutput(true);
+
+            try (OutputStream os = conn.getOutputStream()) {
+                byte[] input = jsonData.getBytes("utf-8");
+                os.write(input, 0, input.length);
+            }
+
+            int responseCode = conn.getResponseCode();
+            if (responseCode == HttpURLConnection.HTTP_CREATED) {
+                System.out.println("Successfully sent record at " + jsonData);
+                return true;
+            } else {
+                System.out.println("Failed to send record. Response code: " + responseCode);
+                return false;
+            }
+
+        } catch (Exception e) {
+            System.out.println("Error sending record.");
+            e.printStackTrace();
+            return false;
+        }
     }
 
     // Method to alert the patient when a threshold is exceeded
@@ -72,6 +93,6 @@ public class forceAndPressure {
         System.out.println("ALERT: Threshold exceeded!");
         System.out.println("Pressure Distribution: " + pressureDistribution);
         System.out.println("Position Time: " + positionTime);
-        // Here, you can implement additional alerting mechanisms such as sending an email or notification
+        // Additional alerting mechanisms could be implemented here
     }
 }
