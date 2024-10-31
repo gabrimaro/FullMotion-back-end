@@ -1,6 +1,6 @@
 package com.Backend.repository;
 
-import com.example.healthapp.model.ForcePressure;
+import com.Backend.Model.ForcePressure;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

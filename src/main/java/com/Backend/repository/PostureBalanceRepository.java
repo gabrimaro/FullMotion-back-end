@@ -1,6 +1,6 @@
 package com.Backend.repository;
 
-import com.example.healthapp.model.PostureBalance;
+import com.Backend.Model.PostureBalance;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
