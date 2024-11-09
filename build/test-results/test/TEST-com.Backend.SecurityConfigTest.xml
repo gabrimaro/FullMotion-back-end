@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.Backend.SecurityConfigTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2024-11-09T06:29:07" hostname="Bens-MacBook-Pro.local" time="1.305">
+  <properties/>
+  <testcase name="testUserDetailsService()" classname="com.Backend.SecurityConfigTest" time="1.14"/>
+  <testcase name="testAuthenticationManager()" classname="com.Backend.SecurityConfigTest" time="0.15"/>
+  <testcase name="testPasswordEncoder()" classname="com.Backend.SecurityConfigTest" time="0.003"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

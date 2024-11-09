@@ -42,12 +42,25 @@ dependencies {
 
 	implementation 'com.microsoft.sqlserver:mssql-jdbc:10.2.0.jre8' // Make sure to use the latest version
 
+	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
+	testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
+
 
 	runtimeOnly 'com.h2database:h2'
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
+
+	outputs.upToDateWhen { false }  // Force tests to always run
+
+	testLogging {
+		events "PASSED", "FAILED", "SKIPPED"
+		// Show full output of passed tests
+		showStandardStreams = true
+	}
 }
 
-mainClassName = 'com.Backend.Application'
+application {
+	mainClass.set('com.Backend.Application')
+}
