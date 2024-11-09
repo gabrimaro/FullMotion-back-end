@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Random;
 
-public class ForceAndPressure {
+public class forceAndPressure {
 
     public static void main(String[] args) {
         int intervalMillis = 1000;  // Set interval to 1 second

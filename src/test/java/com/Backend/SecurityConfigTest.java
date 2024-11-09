@@ -3,6 +3,7 @@ package com.Backend;
 import com.Backend.Model.User;
 import com.Backend.config.SecurityConfig;
 import com.Backend.service.UserService;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -19,6 +20,8 @@ import static org.mockito.Mockito.*;
 
 class SecurityConfigTest {
 
+    AutoCloseable openMocks;
+
     @Mock
     private UserService userService;
 
@@ -27,7 +30,12 @@ class SecurityConfigTest {
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
+      openMocks = MockitoAnnotations.openMocks(this);
+    }
+
+    @AfterEach
+    void tearDown() throws Exception {
+        openMocks.close();
     }
 
 
