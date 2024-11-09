@@ -1,20 +1,20 @@
 package com.Backend.Model;
+
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "users")
+@Table(name = "Temperature/Sweat")
 @Getter
 @Setter
-public class User {
+public class TempSweat {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; // User ID number
+    private Long tempSweatID;
 
-    private String username;
-    private String password;
+    private double temperature;
+    private double sweatRate;
+    private String timestamp;
 }
-
-
-

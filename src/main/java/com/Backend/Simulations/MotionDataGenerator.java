@@ -10,7 +10,7 @@ public class MotionDataGenerator {
 
     private static final DecimalFormat df = new DecimalFormat("#.##");
 
-    public static void main(String[] args) {
+    public static void print(String[] args) {
         int num = 10;  // Specify the number of records to generate
         int successfulRequests = generateMotionData(num);
         System.out.println("Report: ");
@@ -54,7 +54,7 @@ public class MotionDataGenerator {
 
             try {
                 // Send POST request to the database
-                URL url = new URL(System.getenv("DB_URL") + "/motiondata");
+                URL url = new URL(System.getenv("DB_URL") + "/motiondata"); // Db URL has a place holder in it as of right now
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("POST");
                 conn.setRequestProperty("Content-Type", "application/json; utf-8");
@@ -68,20 +68,9 @@ public class MotionDataGenerator {
                 int responseCode = conn.getResponseCode();
                 if (responseCode == HttpURLConnection.HTTP_CREATED) {
                     count++;
-<<<<<<< HEAD
                     System.out.println("Successfully sent record " + (x + 1));
                 } else {
                     System.out.println("Failed to send record " + (x + 1) + ". Response code: " + responseCode);
-=======
-
-                    // Check for alerts
-                    if (jointAngle > jointAngleThreshold) {
-                        sendAlert("Joint angle exceeded threshold: " + jointAngle);
-                    }
-                    if (movementSpeed > movementSpeedThreshold) {
-                        sendAlert("Movement speed exceeded threshold: " + movementSpeed);
-                    }
->>>>>>> hhind002
                 }
 
             } catch (Exception e) {

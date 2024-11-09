@@ -1,6 +1,6 @@
 package com.Backend.repository;
 
-import com.example.healthapp.model.HeartRespiration;
+import com.Backend.Model.HeartRespiration;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
