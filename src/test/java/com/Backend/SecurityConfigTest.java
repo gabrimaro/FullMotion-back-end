@@ -62,10 +62,9 @@ class SecurityConfigTest {
 
     @Test
     void testPasswordEncoder() {
-        // Act
+
         PasswordEncoder passwordEncoder = securityConfig.passwordEncoder();
 
-        // Assert
         assertNotNull(passwordEncoder); //checks not null
         assertInstanceOf(BCryptPasswordEncoder.class, passwordEncoder);  // checks that the returned encoder is BCryptPasswordEncoder
     }
