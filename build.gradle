@@ -36,11 +36,13 @@ dependencies {
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	annotationProcessor 'org.projectlombok:lombok'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'org.springframework.security:spring-security-test'
-	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
 	implementation 'com.microsoft.sqlserver:mssql-jdbc:10.2.0.jre8' // Make sure to use the latest version
+
+	testImplementation ('org.springframework.boot:spring-boot-starter-test') {
+		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+	}
+	testImplementation 'org.springframework.security:spring-security-test'
 
 
 	runtimeOnly 'com.h2database:h2'
@@ -48,6 +50,16 @@ dependencies {
 
 tasks.named('test') {
 	useJUnitPlatform()
+
+	outputs.upToDateWhen { false }  // Force tests to always run
+
+	testLogging {
+		events "PASSED", "FAILED", "SKIPPED"
+		// Show full output of passed tests
+		showStandardStreams = true
+	}
 }
 
-mainClassName = 'com.Backend.Application'
+application {
+	mainClass.set('com.Backend.Application')
+}
