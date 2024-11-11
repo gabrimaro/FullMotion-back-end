@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Random;
 
-public class forceAndPressure {
+public class ForceAndPressure {
     public static void main(String[] args) {
         int interval = 5000;  // Interval between data sends in milliseconds
         while (true) {

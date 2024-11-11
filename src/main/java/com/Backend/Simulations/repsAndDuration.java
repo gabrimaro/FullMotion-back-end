@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Random;
 
-public class repsAndDuration {
+public class RepsAndDuration {
     public static void main(String[] args) {
         int interval = 5000;
         while (true) {
