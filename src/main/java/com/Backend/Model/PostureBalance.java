@@ -12,9 +12,7 @@ public class PostureBalance {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long balanceID;
-
-    private Long sessionID;
+    private Long exerciseID;
     private String bodyAlignment;
     private String centerOfMass;
     private String swayPattern;

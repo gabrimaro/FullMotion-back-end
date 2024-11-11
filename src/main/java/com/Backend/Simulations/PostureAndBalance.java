@@ -8,7 +8,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
-public class BalanceDataGenerator {
+public class PostureAndBalance {
 
     private static final DecimalFormat df = new DecimalFormat("#.##");
     private static final SimpleDateFormat timestampFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -40,7 +40,7 @@ public class BalanceDataGenerator {
         while (System.currentTimeMillis() < endTime) {
             String timestamp = timestampFormat.format(new Date());
             String jsonData = String.format(
-                "{ \"timestamp\": \"%s\", \"balanceID\": %d, \"sessionID\": %d, \"bodyAlignment\": \"%s\", \"centerOfMass\": \"%s\", \"swayPattern\": \"%s\", \"balanceTime\": %s, \"supportNeeded\": %b }",
+                "{ \"timestamp\": \"%s\", \"exerciseID\": %d, \"bodyAlignment\": \"%s\", \"centerOfMass\": \"%s\", \"swayPattern\": \"%s\", \"balanceTime\": %s, \"supportNeeded\": %b }",
                 timestamp,
                 count + 1,
                 random.nextInt(100) + 1,
