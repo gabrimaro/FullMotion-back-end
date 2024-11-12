@@ -29,9 +29,21 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody User user) {
         try {
-            if (userService.authenticate(user.getUsername(), user.getPassword())) {
-                // If successful, return a success message or user details
-                return ResponseEntity.ok("Login successful for user: " + user.getUsername());
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword())
+            );
+
+            if (authentication.isAuthenticated()) {
+                User authenticatedUser = userService.findByUsername(user.getUsername());
+
+                UserResponseDTO userResponse = new UserResponseDTO(
+                        authenticatedUser.getUsername(),
+                        authenticatedUser.getFirstName(),
+                        authenticatedUser.getLastName(),
+                        authenticatedUser.getEmail()
+                );
+
+                return ResponseEntity.ok(userResponse);
             } else {
                 // If authentication fails, return an error response
                 return ResponseEntity.status(401).body("Login failed: Invalid username or password");
