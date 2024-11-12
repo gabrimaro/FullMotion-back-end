@@ -50,7 +50,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable) // Disable CSRF for simplicity
                 .authorizeHttpRequests(requests -> requests
                         .requestMatchers("/login", "/register", "/h2-console/**").permitAll() // Permits access to these endpoints
-                        .anyRequest().permitAll()
+                        .anyRequest().authenticated()
 
                 );
 
