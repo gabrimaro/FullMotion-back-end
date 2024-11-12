@@ -19,12 +19,20 @@ public class UserService {
         if (userRepository.findByUsername(user.getUsername()) != null) { // Checks if user exists
             throw new IllegalArgumentException("Username already exists");
         }
+
+        if (userRepository.findByEmail(user.getEmail()) != null) {
+            throw new IllegalArgumentException("Email already exists");
+        }
             user.setPassword(passwordEncoder.encode(user.getPassword())); // Sets password for new user
         return userRepository.save(user);
     }
 
     public User findByUsername(String username) {
         return userRepository.findByUsername(username);  // Finds user based on username
+    }
+
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
 
     public boolean authenticate(String username, String password) {
