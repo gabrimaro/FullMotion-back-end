@@ -14,8 +14,10 @@ public class User {
 
     private String username;
     private String password;
+    private String prefix;
     private String firstName;
     private String lastName;
+    private String suffix;
     private String email;
 }
 
