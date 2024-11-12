@@ -40,16 +40,19 @@ class UserServiceTest {
     void testRegisterSuccess() {
         User user = new User();
         user.setUsername("TestUser");
-        user.setPassword("password123");
+        user.setEmail("testuser@aol.com");
+        user.setPassword("Password123!");
 
         when(userRepository.findByUsername("TestUser")).thenReturn(null); // No user exists
+        when(userRepository.findByEmail("testuser@aol.com")).thenReturn(null); // No email exists
         when(userRepository.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
 
         User registeredUser = userService.register(user);
 
         assertNotNull(registeredUser);
-        assertNotEquals("password123", registeredUser.getPassword()); // checks if password is encoded
-        assertTrue(passwordEncoder.matches("password123", registeredUser.getPassword())); // checks if password matches after encoding
+        assertNotEquals("Password123!", registeredUser.getPassword()); // checks if password is encoded
+        assertTrue(passwordEncoder.matches("Password123!", registeredUser.getPassword())); // checks if password matches after encoding
 
         verify(userRepository).save(user); // verifies save was called
     }
@@ -63,12 +66,65 @@ class UserServiceTest {
 
         User user = new User();
         user.setUsername("TestUser");
-        user.setPassword("password123");
+        user.setEmail("testuser@aol.com");
+        user.setPassword("Password123!");
 
         Exception exception = assertThrows(IllegalArgumentException.class, () -> userService.register(user));
         assertEquals("Username already exists", exception.getMessage());
 
         verify(userRepository, never()).save(any(User.class)); // verifies save was not called
+    }
+
+    @Test
+    void testRegisterExistingEmail() {
+        User existingUser = new User();
+        existingUser.setEmail("testuser@aol.com");
+
+        when(userRepository.findByEmail("testuser@aol.com")).thenReturn(existingUser);
+
+        User user = new User();
+        user.setUsername("NewUser");
+        user.setEmail("testuser@aol.com");
+        user.setPassword("Password123!");
+
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> userService.register(user));
+        assertEquals("Email already exists", exception.getMessage());
+
+        verify(userRepository, never()).save(any(User.class)); // Verifies save was not called
+    }
+
+    @Test
+    void testRegisterInvalidPassword() {
+        // Password doesn't meet the new requirements
+        User user = new User();
+        user.setUsername("TestUser");
+        user.setEmail("testuser@aol.com");
+        user.setPassword("password"); //no uppercase, number, or symbol
+
+        when(userRepository.findByUsername("TestUser")).thenReturn(null);
+        when(userRepository.findByEmail("testuser@aol.com")).thenReturn(null);
+
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> userService.register(user));
+        assertEquals("Password must be at least 8 characters, contain one uppercase letter, one lowercase letter, one symbol and one number.", exception.getMessage());
+
+        verify(userRepository, never()).save(any(User.class)); // Verifies save was not called
+    }
+
+    @Test
+    void testRegisterPasswordTooShort() {
+        // Password is too short
+        User user = new User();
+        user.setUsername("TestUser");
+        user.setEmail("testuser@aol.com");
+        user.setPassword("word"); //password too short
+
+        when(userRepository.findByUsername("TestUser")).thenReturn(null);
+        when(userRepository.findByEmail("testuser@aol.com")).thenReturn(null);
+
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> userService.register(user));
+        assertEquals("Password must be at least 8 characters, contain one uppercase letter, one lowercase letter, one symbol and one number.", exception.getMessage());
+
+        verify(userRepository, never()).save(any(User.class)); // Verifies save was not called
     }
 
     @Test
@@ -96,6 +152,21 @@ class UserServiceTest {
         assertTrue(userService.authenticate("TestUser", "password123"));
         verify(userRepository).findByUsername("TestUser");
     }
+
+    @Test
+    void testFindByEmail() {
+        User user = new User();
+        user.setEmail("testuser@aol.com");
+
+        when(userRepository.findByEmail("testuser@aol.com")).thenReturn(user);
+
+        User foundUser = userService.findByEmail("testuser@aol.com");
+
+        assertNotNull(foundUser);
+        assertEquals("testuser@aol.com", foundUser.getEmail());
+        verify(userRepository).findByEmail("testuser@aol.com"); // Verifies findByEmail was called
+    }
+
 
     @Test
     void testAuthenticateFailure() {
