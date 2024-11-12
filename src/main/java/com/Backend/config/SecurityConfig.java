@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 
-@Component
+@Configuration
 public class SecurityConfig {
 
     private final UserService userService;
