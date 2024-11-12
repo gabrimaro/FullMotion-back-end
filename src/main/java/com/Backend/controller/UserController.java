@@ -12,6 +12,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.HttpStatus;
 
 
 @RestController
@@ -29,8 +30,14 @@ public class UserController {
     @PostMapping("/register")
     public ResponseEntity<String> registerUser(@RequestBody User user) {
         {
-            userService.register(user); // Registers new user
-            return ResponseEntity.ok("User registered successfully"); //returns message if registration is successful
+            try {
+                userService.register(user); // Registers new user
+                return ResponseEntity.ok("User registered successfully"); //returns message if registration is successful
+
+            } catch (IllegalArgumentException e) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            }
+
         }
     }
 
@@ -48,6 +55,8 @@ public class UserController {
                         authenticatedUser.getUsername(),
                         authenticatedUser.getFirstName(),
                         authenticatedUser.getLastName(),
+                        authenticatedUser.getPrefix(),
+                        authenticatedUser.getSuffix(),
                         authenticatedUser.getEmail()
                 );
 
