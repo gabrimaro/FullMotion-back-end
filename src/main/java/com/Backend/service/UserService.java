@@ -20,7 +20,7 @@ public class UserService {
             throw new IllegalArgumentException("Username already exists");
         }
 
-        if (userRepository.findByEmail(user.getEmail()) != null) {
+        if (userRepository.findByEmail(user.getEmail()) != null) { //checks if email has been used
             throw new IllegalArgumentException("Email already exists");
         }
             user.setPassword(passwordEncoder.encode(user.getPassword())); // Sets password for new user
@@ -32,7 +32,7 @@ public class UserService {
     }
 
     public User findByEmail(String email) {
-        return userRepository.findByEmail(email);
+        return userRepository.findByEmail(email); //Finds user by email
     }
 
     public boolean authenticate(String username, String password) {

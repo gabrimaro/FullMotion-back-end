@@ -45,13 +45,13 @@ public class UserController {
     public ResponseEntity<?> login(@RequestBody User user) {
         try {
             Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword())
+                    new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()) //authenticates user with password given
             );
 
             if (authentication.isAuthenticated()) {
-                User authenticatedUser = userService.findByUsername(user.getUsername());
+                User authenticatedUser = userService.findByUsername(user.getUsername()); //if user is authenticated it finds user
 
-                UserResponseDTO userResponse = new UserResponseDTO(
+                UserResponseDTO userResponse = new UserResponseDTO( //upon login returns user info in JSON format
                         authenticatedUser.getUsername(),
                         authenticatedUser.getFirstName(),
                         authenticatedUser.getLastName(),
@@ -62,7 +62,7 @@ public class UserController {
 
                 return ResponseEntity.ok(userResponse);
             } else {
-                // If authentication fails, return an error response
+                // If authentication fails return an error response
                 return ResponseEntity.status(401).body("Login failed: Invalid username or password");
             }
         } catch (AuthenticationException e) {
