@@ -7,6 +7,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 public class UserService {
@@ -14,6 +16,9 @@ public class UserService {
     private UserRepository userRepository;
 
     private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
+    private static final String PASSWORD_REGEX = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$";
+
 
     public User register(User user) {
         if (userRepository.findByUsername(user.getUsername()) != null) { // Checks if user exists
@@ -23,8 +28,18 @@ public class UserService {
         if (userRepository.findByEmail(user.getEmail()) != null) { //checks if email has been used
             throw new IllegalArgumentException("Email already exists");
         }
+
+        if (!isPasswordValid(user.getPassword())) {
+            throw new IllegalArgumentException("Password must be at least 8 characters, contain one uppercase letter, one lowercase letter, one symbol and one number.");
+        }
             user.setPassword(passwordEncoder.encode(user.getPassword())); // Sets password for new user
         return userRepository.save(user);
+    }
+
+    private boolean isPasswordValid(String password) {
+        Pattern pattern = Pattern.compile(PASSWORD_REGEX);
+        Matcher matcher = pattern.matcher(password);
+        return matcher.matches();
     }
 
     public User findByUsername(String username) {
