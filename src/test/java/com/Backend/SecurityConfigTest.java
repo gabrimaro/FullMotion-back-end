@@ -30,7 +30,8 @@ class SecurityConfigTest {
 
     @BeforeEach
     void setUp() {
-      openMocks = MockitoAnnotations.openMocks(this);
+
+        openMocks = MockitoAnnotations.openMocks(this);
     }
 
     @AfterEach
