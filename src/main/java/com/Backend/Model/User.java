@@ -1,12 +1,16 @@
 package com.Backend.Model;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Table(name = "users")
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,6 +23,8 @@ public class User {
     private String lastName;
     private String suffix;
     private String email;
+
+
 }
 
 
