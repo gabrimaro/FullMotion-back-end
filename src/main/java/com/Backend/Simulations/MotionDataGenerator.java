@@ -51,7 +51,7 @@ public class MotionDataGenerator {
 
             try {
                 // Send POST request to the database
-                URL url = new URL(System.getenv("DB_URL") + "/motiondata"); // Db URL has a place holder in it as of right now
+                URL url = new URL(System.getenv("DB_URL") + "/motiondata");
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("POST");
                 conn.setRequestProperty("Content-Type", "application/json; utf-8");
@@ -79,7 +79,7 @@ public class MotionDataGenerator {
         return count;
     }
 
-    // Method to send alerts (example implementation)
+    
     private static void sendAlert(String message) {
         try {
             URL alertUrl = new URL(System.getenv("ALERT_URL")); // Ensure ALERT_URL is set in your environment

@@ -5,7 +5,6 @@ import java.net.URL;
 import java.io.OutputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Random;
 
 public class forceAndPressure {
 
@@ -19,18 +18,18 @@ public class forceAndPressure {
     }
 
     public static int startContinuousForcePressureStream(int intervalMillis, int durationSeconds) {
-        Random random = new Random();
         int count = 0;
         long endTime = System.currentTimeMillis() + durationSeconds * 1000;
 
         while (System.currentTimeMillis() < endTime) {
-            double pressureDistribution = 1 + (random.nextDouble() * 9.0);  // Range [1, 10]
-            double positionTime = 0.5 + (random.nextDouble() * 9.5);  // Range [0.5, 10]
-            boolean muscleActivation = random.nextBoolean();
+            
+            double pressureDistribution = 1 + 4 * Math.sin(Math.toRadians(count * 10)) + 4; // Sinusoidal wave [1, 9]
+            double positionTime = 0.5 + 4.5 * Math.cos(Math.toRadians(count * 15)) + 4.5; // Cosine wave [0.5, 10]
+            boolean muscleActivation = count % 2 == 0; // Alternating between true and false
             String timestamp = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
 
             // Alert if values exceed thresholds
-            if (pressureDistribution > 8 || positionTime > 10) {
+            if (pressureDistribution > 8 || positionTime > 9.5) {
                 alertPatient(pressureDistribution, positionTime);
             }
 
@@ -38,7 +37,7 @@ public class forceAndPressure {
             String jsonData = String.format(
                 "{ \"forcePressureID\": %d, \"exerciseID\": %d, \"muscleActivation\": %b, \"pressureDistribution\": %.2f, \"positionTime\": %.2f, \"timestamp\": \"%s\" }",
                 count + 1,
-                random.nextInt(10) + 1,
+                (count % 10) + 1, // Cyclical pattern for exerciseID [1, 10]
                 muscleActivation,
                 pressureDistribution,
                 positionTime,
@@ -76,7 +75,7 @@ public class forceAndPressure {
 
             int responseCode = conn.getResponseCode();
             if (responseCode == HttpURLConnection.HTTP_CREATED) {
-                System.out.println("Successfully sent record at " + jsonData);
+                System.out.println("Successfully sent record: " + jsonData);
                 return true;
             } else {
                 System.out.println("Failed to send record. Response code: " + responseCode);
@@ -95,6 +94,5 @@ public class forceAndPressure {
         System.out.println("ALERT: Threshold exceeded!");
         System.out.println("Pressure Distribution: " + pressureDistribution);
         System.out.println("Position Time: " + positionTime);
-        // Additional alerting mechanisms could be implemented here
     }
 }
