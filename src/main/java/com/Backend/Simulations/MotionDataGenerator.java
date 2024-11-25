@@ -6,7 +6,6 @@ import java.io.OutputStream;
 import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Random;
 
 public class MotionDataGenerator {
 
@@ -26,19 +25,15 @@ public class MotionDataGenerator {
         if (num > 146) num = 146;  // Limiting the number of records for simplicity
 
         int count = 0;
-        Random random = new Random();
-
-        // Define thresholds for alerts
-        double jointAngleThreshold = 150.0;  // Example threshold for joint angle
-        double movementSpeedThreshold = 2.0;  // Example threshold for movement speed
 
         for (int x = 0; x < num; x++) {
-            double exerciseID = 1 + (9 * random.nextDouble());
-            double jointAngle = 180 * random.nextDouble();
-            double rangeOfMotion = 10 + (170 * random.nextDouble());
-            double movementSpeed = 0.1 + (2.4 * random.nextDouble());
-            double stepLength = 0.3 + (1.2 * random.nextDouble());
-            double cadence = 60 + (90 * random.nextDouble());
+            
+            double exerciseID = 1 + (x % 10); // Cyclical pattern from 1 to 10
+            double jointAngle = 90 + 90 * Math.sin(Math.toRadians(x * 10)); // Sinusoidal wave between 0 and 180
+            double rangeOfMotion = 10 + (x * 5) % 170; // Linearly increasing with a modulo for bounds
+            double movementSpeed = 0.1 + 2.4 * Math.pow(Math.sin(Math.toRadians(x * 5)), 2); // Parabolic curve
+            double stepLength = 0.3 + Math.log10(1 + x % 10) * 0.3; // Logarithmic increase
+            double cadence = 60 + 30 * Math.sin(Math.toRadians(x * 15)) + (x % 10); // Linear and sinusoidal combination
 
             String jsonData = String.format(
                 "{ \"trackingID\": %d, \"exerciseID\": %s, \"jointAngle\": %s, \"rangeOfMotion\": %s, \"movementSpeed\": %s, \"stepLength\": %s, \"cadence\": %s, \"timestamp\": \"%s\" }",
