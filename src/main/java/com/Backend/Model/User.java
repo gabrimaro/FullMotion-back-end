@@ -26,7 +26,7 @@ public class User {
     private String suffix;
     private String email;
 
-    @OneToMany(mappedBy = "therapist", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Patient> patients;
 
 }

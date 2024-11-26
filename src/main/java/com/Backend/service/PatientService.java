@@ -10,8 +10,8 @@ import java.util.List;
 public class PatientService {
     @Autowired
     private PatientRepository patientRepository;
-    public List<Patient> getPatientsByTherapistId(Long therapistId) {
-        return patientRepository.findByTherapistId(therapistId);
+    public List<Patient> getPatientsByUserId(Long therapistId) {
+        return patientRepository.findByUserId(therapistId);
     }
 
     public Patient getPatientById(Long patientId) {
