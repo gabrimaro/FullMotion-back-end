@@ -5,12 +5,14 @@ import com.Backend.repository.TherapistRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class TherapistService {
     @Autowired
     private TherapistRepository therapistRepository;
 
-    public Therapist findByTherapistId(Long therapistId) {
+    public Optional<Therapist> findByTherapistId(Long therapistId) {
         return therapistRepository.findById(therapistId);
     }
 }
