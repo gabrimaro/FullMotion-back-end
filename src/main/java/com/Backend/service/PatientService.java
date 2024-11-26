@@ -15,6 +15,7 @@ public class PatientService {
     }
 
     public Patient getPatientById(Long patientId) {
+
         return patientRepository.findPatientById(patientId);
     }
 

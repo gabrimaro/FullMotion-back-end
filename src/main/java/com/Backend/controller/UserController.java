@@ -42,7 +42,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody User user) {
+    public ResponseEntity<?> login(@RequestBody User user, UserDetails authenticatedPrincipal) {
         try {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()) //authenticates user with password given
@@ -57,7 +57,8 @@ public class UserController {
                         authenticatedUser.getLastName(),
                         authenticatedUser.getEmail(),
                         authenticatedUser.getPrefix(),
-                        authenticatedUser.getSuffix()
+                        authenticatedUser.getSuffix(),
+                        authenticatedUser.getPatients()
                 );
 
                 return ResponseEntity.ok(userResponse);

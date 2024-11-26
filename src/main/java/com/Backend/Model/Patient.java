@@ -15,8 +15,9 @@ public class Patient {
     private String phoneNumber;
     private String status;
 
+
     @ManyToOne
     @JoinColumn(name = "therapist_id", nullable = false)
-    private Therapist therapist;
+    private User user;
 
 }
