@@ -17,6 +17,5 @@ public class Therapist {
     private Long id;
     private String name;
 
-    @OneToMany(mappedBy = "therapist", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Patient> patients;
+
 }

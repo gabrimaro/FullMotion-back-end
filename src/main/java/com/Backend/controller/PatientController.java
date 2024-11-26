@@ -14,7 +14,7 @@ public class PatientController {
 
     @PostMapping("/therapist/{therapistId}")
     public List<Patient> getPatientsByTherapistId(@PathVariable Long therapistId) {
-        return patientService.getPatientsByTherapistId(therapistId);
+        return patientService.getPatientsByUserId(therapistId);
     }
 
     @PostMapping ("/add")
