@@ -27,7 +27,7 @@ public class User {
     private String email;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Patient> patients;  // One user can have many patients
+    private List<Patient> patients;  //one user has many patients
 }
 
 

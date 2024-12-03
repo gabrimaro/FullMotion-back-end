@@ -11,12 +11,12 @@ import java.util.List;
 public interface PostureBalanceRepository extends JpaRepository<PostureBalance, Long> {
     
     // Find all records by a specific sessionID
-    List<PostureBalance> findBySessionID(Long exerciseID);
+   // List<PostureBalance> findBySessionID(Long exerciseID);
     
     // Custom query to find records where support is needed
-    @Query("SELECT p FROM PostureBalance p WHERE p.supportNeeded = true")
-    List<PostureBalance> findAllWithSupportNeeded();
+   // @Query("SELECT p FROM PostureBalance p WHERE p.supportNeeded = true")
+   // List<PostureBalance> findAllWithSupportNeeded();
 
     // Custom query to find by a balance time greater than a specific value
-    List<PostureBalance> findByBalanceTimeGreaterThan(double balanceTime);
+   // List<PostureBalance> findByBalanceTimeGreaterThan(double balanceTime);
 }

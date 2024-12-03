@@ -19,11 +19,14 @@ public class Patient {
 
     private String firstName;
     private String lastName;
-    private String dateOfBirth;
-    private String gender;
-    private String medicalHistory;
+    private int age;  // Patient age
+    private String dateOfBirth; // Patient date of birth
+    private String gender;      // Patient gender
+    private String email; // Patient's email
+    private String phone; //Patient's phone number
+    private String notes; //Notes
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)  // Link to User entity
-    private User user;  // Each patient is associated with one user
+    @JoinColumn(name = "user_id", nullable = false)  //links to User entity
+    private User user;
 }

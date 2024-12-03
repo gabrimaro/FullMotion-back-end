@@ -1,6 +1,7 @@
 package com.Backend.controller;
 
 import com.Backend.Model.Patient;
+import com.Backend.dto.PatientDTO;
 import com.Backend.service.PatientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -21,9 +22,9 @@ public class PatientController {
         return ResponseEntity.ok("Patient added successfully");
     }
 
-    @GetMapping("/{userId}")
-    public ResponseEntity<List<Patient>> getPatientsByUser(@PathVariable Long userId) {
-        List<Patient> patients = patientService.getPatientsByUser(userId);
-        return ResponseEntity.ok(patients);
+    @GetMapping("/user/{username}")
+    public ResponseEntity<List<PatientDTO>> getPatientsByUsername(@PathVariable String username) {
+        List<PatientDTO> patients = patientService.getPatientsByUsername(username);
+        return ResponseEntity.ok(patients); // Return List<PatientDTO> as JSON
     }
 }
