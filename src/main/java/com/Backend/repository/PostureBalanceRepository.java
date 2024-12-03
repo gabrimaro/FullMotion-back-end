@@ -9,7 +9,7 @@ import java.util.List;
 
 @Repository
 public interface PostureBalanceRepository extends JpaRepository<PostureBalance, Long> {
-    
+
     // Find all records by a specific sessionID
    // List<PostureBalance> findBySessionID(Long exerciseID);
     

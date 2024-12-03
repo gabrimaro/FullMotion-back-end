@@ -50,13 +50,13 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.addAllowedOrigin("http://localhost:5173"); // Change this to your frontend URL
+        corsConfiguration.addAllowedOrigin("http://localhost:5173");
         corsConfiguration.addAllowedMethod("GET");
         corsConfiguration.addAllowedMethod("POST");
         corsConfiguration.addAllowedMethod("PUT");
         corsConfiguration.addAllowedMethod("DELETE");
         corsConfiguration.addAllowedHeader("*");
-        corsConfiguration.setAllowCredentials(true); // Allow credentials like cookies or authorization headers
+        corsConfiguration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", corsConfiguration);
@@ -66,14 +66,12 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-
                 .csrf(AbstractHttpConfigurer::disable) // Disable CSRF for simplicity
                 .cors()
                 .and()
                 .authorizeHttpRequests(requests -> requests
                         .requestMatchers("/login", "/register", "/h2-console/**").permitAll() // Permits access to these endpoints
                         .anyRequest().permitAll()
-
 
                 );
 
