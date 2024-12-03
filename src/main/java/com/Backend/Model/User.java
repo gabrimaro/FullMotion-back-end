@@ -24,6 +24,7 @@ public class User {
     private String suffix;
     private String email;
 
+
 }
 
 
