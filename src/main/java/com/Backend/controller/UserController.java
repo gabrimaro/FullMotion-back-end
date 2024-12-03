@@ -57,7 +57,8 @@ public class UserController {
                         authenticatedUser.getLastName(),
                         authenticatedUser.getEmail(),
                         authenticatedUser.getPrefix(),
-                        authenticatedUser.getSuffix()
+                        authenticatedUser.getSuffix(),
+                        authenticatedUser.getPatients()
                 );
 
                 return ResponseEntity.ok(userResponse);
