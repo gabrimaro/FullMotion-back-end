@@ -22,7 +22,7 @@ public class PatientController {
         return ResponseEntity.ok("Patient added successfully");
     }
 
-    @GetMapping("/user/{username}")
+    @PostMapping ("/user/{username}")
     public ResponseEntity<List<PatientDTO>> getPatientsByUsername(@PathVariable String username) {
         List<PatientDTO> patients = patientService.getPatientsByUsername(username);
         return ResponseEntity.ok(patients); // Return List<PatientDTO> as JSON
